@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns="http://www.w3.org/ns/widgets"
+        xmlns:rim="http://www.blackberry.com/ns/widgets"
+        version="1.0.0.1" id="CKCalorieTracker"
+        name="CK Calories Tracker"
+        author="Karamdip Binning">  
+    <name>KB Calorie Tracker</name>
+    <author>Karamdip Binning</author>
+    <description>This is an app designed to help users track BMI and Calorie Intake using html5 and storage</description>
+    
+    <content src="index.html"/>
+    <icon src="images/logo.png"/>
+	<access subdomains="true" uri="*">
+    </access>
+  
+    <rim:permissions>  
+        <rim:permit>read_geolocation</rim:permit>
+    </rim:permissions>  
+    <feature id="blackberry.app" required="true" version="1.0.0.0"/>
+    <icon rim:hover="false" src="images/logo.png"/>
+</widget>
