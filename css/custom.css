@@ -1,0 +1,27 @@
+/*
+ * Custom CSS
+ */
+img { max-width: 100%; }
+
+.red { color : red; }
+label.error { color: #F00; font-weight: bold; } 
+input.error, select.error, textarea.error { border: 1px red solid; }
+
+ul
+{
+    list-style-type: none;
+}
+
+h1 b {
+    font-family: Consolas;
+    color: #000000;
+}
+
+.frmActivity {
+    text-align: center;
+}
+
+#lblCalc {
+    color: green;
+    font-weight: bold;
+}

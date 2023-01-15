@@ -1,0 +1,841 @@
+﻿<!DOCTYPE HTML>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>CK Calorie Tracker</title>
+    <script src="js/jquery.js" type="text/javascript"></script>
+    <script src="js/jquery.mobile-1.1.1.min.js" type="text/javascript"></script>
+
+    <script src="js/geo.js" type="text/javascript"></script>
+
+    <link href="css/themes/default/jquery.mobile-1.1.1.css" rel="stylesheet" type="text/css" />
+    <link href="css/custom.css" rel="stylesheet" type="text/css" />
+
+    <script src="js/jquery.validate.js"></script>
+    <script src="js/jquery.validate.min.js"></script>
+
+    <script src="js/basic.js"></script>
+    <script src="js/insertPerson.js"></script>
+    <script src="js/deleteUpdatePerson.js" type="text/javascript"></script>
+
+    <script src="js/jquery.countup.js"></script>
+
+    <script src="js/geo.js"></script>
+
+    <script src="js/charts.js"></script>
+    <script type="text/javascript" src="http://filamentgroup.github.com/EnhanceJS/enhance.js"></script>	
+    <!--<script type="text/javascript">
+        // Run capabilities test
+        enhance({
+            loadScripts: [
+				{ src: 'js/excanvas.js' }, { iecondition: 'all' },
+				//'js/jquery.js',
+				'js/visualize.jQuery.js',
+				'js/example.js'
+            ],
+            loadStyles: [
+				'css/visualize.css',
+				'css/visualize-dark.css'
+            ]
+        });
+    </script>-->
+    
+</head>
+
+<body>
+
+    <div data-role="page" id="home">
+        <header data-role="header" data-theme="c">
+            <h1><b>CK Calorie Tracker</b></h1>
+            <div data-role="navbar">
+		        <ul>
+			        <li><a href="#home" data-icon="home" data-iconpos="left" 
+                        data-transition="" data-theme="c" 
+                        class="ui-btn-active ui-state-persist">Home</a></li>
+                    <li><a href="#person" data-icon="star" data-iconpos="left"
+                        data-theme="c">Person</a></li>
+			        <li><a href="#chooseCTBMI" data-icon="grid" data-iconpos="left" 
+                        data-transition="" data-theme="c">Calorie Tracker / BMI</a></li>
+                    <li><a href="#alterWeight" data-icon="grid" data-iconpos="left" 
+                        data-transition="" data-theme="c">Weight</a></li>
+                    <li><a href="#calculate" data-icon="info" data-iconpos="left" 
+                        data-transition="" 
+                        data-theme="c">Calculate Activity / Distance</a></li>
+		        </ul>
+		    </div>
+        </header>
+
+        <section data-role="content">
+         <div style="float: right; width: auto;">
+            <input id="btnAboutUs" class="btnAboutUs" type="button" data-icon="info" 
+                data-theme="a" data-iconpos="top" />
+         </div>
+          <ul>
+              <li><b>BMI (Body Mass Index): </b>measurement of an individual's body mass.
+                  It's a basic calculation to determine the health of an average person.</li>
+              <li><b>BMR: </b>estimated calorie intake to maintain weight.</li>
+          </ul>
+          <p>
+              <a href="Tutorial.pptx">Right-click here and save as to download tutorial.</a>
+          </p>
+            <div style="float: right;">
+                <a class="twitter-timeline" href="https://twitter.com/ckCalorieTracke" 
+                    data-widget-id="404985698161131523">Tweets by @ckCalorieTracke</a>
+                <script>
+                    !function (d, s, id) {
+                        var js,
+                            fjs = d.getElementsByTagName(s)[0],
+                            p = /^http:/.test(d.location) ? 'http' : 'https';
+                        if (!d.getElementById(id)) {
+                            js = d.createElement(s);
+                            js.id = id;
+                            js.src = p + "://platform.twitter.com/widgets.js";
+                            fjs.parentNode.insertBefore(js, fjs);
+                        }
+                    }
+                    (document, "script", "twitter-wjs");
+                </script>
+
+
+            </div>
+        </section>
+
+    <footer data-role="footer" data-theme="c">
+        <h4>&copy; 2013</h4>
+    </footer>
+    </div>
+
+    <div data-role="page" id="calorieTracker">
+        <header data-role="header" data-theme="d">
+            <h1><b>CK Calorie Tracker</b></h1>
+            <div data-role="navbar">
+		    <ul>
+			    <li><a href="#home" data-icon="home" data-iconpos="left" 
+                    data-transition="" data-theme="c">Home</a></li>
+                <li><a href="#person" data-icon="star" data-iconpos="left"
+                    data-theme="c">Person</a></li>
+			    <li><a href="#chooseCTBMI" data-icon="grid" data-iconpos="left" 
+                    data-transition="" data-theme="c" 
+                    class="ui-btn-active ui-state-persist">Calorie Tracker / BMI</a></li>
+                <li><a href="#alterWeight" data-icon="grid" data-iconpos="left" 
+                    data-transition="" data-theme="c">Weight</a></li>
+                <li><a href="#calculate" data-icon="info" data-iconpos="left" 
+                        data-transition="" 
+                        data-theme="c">Calculate Activity / Distance</a></li>
+		    </ul>
+		    </div>
+        </header>
+
+        <section data-role="content">
+            <form id="frmDCI" name="frmDCI" data-ajax="false">
+               <fieldset data-role="controlgroup" data-type="horizontal">
+			      <label for="choice1a">Male</label>
+			      <input type="radio" name="dci" id="choice1a" value="Male" checked="checked" />
+			      <label for="choice2a">Female</label>
+		          <input type="radio" name="dci" id="choice2a" value="Female" />
+		       </fieldset><br />
+
+               AGE (Years)
+               <input name="txtAgeDCI" id="txtAgeDCI" type="text" class="required"
+                   title="Please enter an age." /><br />
+
+               HEIGHT (Feet | Inches)
+               <fieldset data-role="controlgroup" data-type="horizontal">
+                    <select id="ddlFeet" name="ddlFeet">
+                        <optgroup label="Feet">
+                            <option value="1" selected="selected">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                        </optgroup>
+                    </select>
+                    <select id="ddlInches">
+                        <optgroup label="Inches">
+                            <option value="0" selected="selected">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                        </optgroup>
+                    </select>
+                </fieldset>
+                <br />
+
+		        WEIGHT (lbs)
+                <input name="txtWeightDCI" id="txtWeightDCI" type="text" class="required"
+                    title="Please enter a weight in pounds." />
+                <fieldset data-role="controlgroup" data-type="horizontal">
+                    <button id="btnDCI" data-theme="e" data-inline="false">Calculate</button>
+                </fieldset>
+                <br /><b>DAILY CALORIE INTAKE: </b><label id="lblDCI">N/A</label>
+            </form>
+        </section>
+
+    <footer data-role="footer" data-theme="c">
+        <h4>&copy; 2013</h4>
+    </footer>
+    </div>
+
+    <div data-role="page" id="bmiTracker">
+        <header data-role="header" data-theme="d">
+            <h1><b>CK Calorie Tracker</b></h1>
+            <div data-role="navbar">
+		    <ul>
+			    <li><a href="#home" data-icon="home" data-iconpos="left" 
+                    data-transition="" data-theme="c">Home</a></li>
+                <li><a href="#person" data-icon="star" data-iconpos="left"
+                    data-theme="c">Person</a></li>
+			    <li><a href="#chooseCTBMI" data-icon="grid" data-iconpos="left" 
+                    data-transition="" data-theme="c"
+                    class="ui-btn-active ui-state-persist">Calorie Tracker / BMI</a></li>
+                <li><a href="#alterWeight" data-icon="grid" data-iconpos="left" 
+                    data-transition="" data-theme="c">Weight</a></li>
+                <li><a href="#calculate" data-icon="info" data-iconpos="left" 
+                        data-transition="" 
+                        data-theme="c">Calculate Activity / Distance</a></li>
+		    </ul>
+		    </div>
+        </header>
+
+        <section data-role="content">
+
+            <form id="frmBMI" name="frmBMI">
+		        <p><b>Find out your BMI</b></p>
+			
+                <label for="txtWeightBMI">Weight (lbs)</label>
+			    <input id="txtWeightBMI" name="txtWeightBMI" type="text" class="required number"
+                    title="Please enter your weight in pounds"><br />
+				
+			    HEIGHT (Feet | Inches)
+               <fieldset data-role="controlgroup" data-type="horizontal">
+                    <select id="ddlFeetBMI" name="ddlFeetBMI">
+                        <optgroup label="Feet">
+                            <option value="1" selected="selected">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                        </optgroup>
+                    </select>
+                    <select id="ddlInchesBMI">
+                        <optgroup label="Inches">
+                            <option value="0" selected="selected">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </optgroup>
+                    </select>
+                </fieldset>
+
+                <fieldset data-role="controlgroup" data-type="horizontal">
+                    <button id="btnBMI" data-theme="e" data-inline="false">Calculate</button>
+                </fieldset>
+                <hr /><br />
+                <b>Estimated BMI: </b><label id="lblBMI">N/A</label><label id="lblStatus"></label>
+                <span id="result2"></span>​
+		    </form>
+      
+        </section>
+
+    <footer data-role="footer" data-theme="c">
+            <h4>&copy; 2013</h4>
+        </footer>
+    </div>
+    
+    <div data-role="page" id="calculate">
+        <header data-role="header" data-theme="d">
+            <h1><b>CK Calorie Tracker</b></h1>
+            <div data-role="navbar">
+		    <ul>
+			    <li><a href="#home" data-icon="home" data-iconpos="left" 
+                    data-transition="" data-theme="c">Home</a></li>
+                <li><a href="#person" data-icon="star" data-iconpos="left"
+                    data-theme="c">Person</a></li>
+			    <li><a href="#chooseCTBMI" data-icon="grid" data-iconpos="left" 
+                    data-transition="" data-theme="c">Calorie Tracker / BMI</a></li>
+                <li><a href="#alterWeight" data-icon="grid" data-iconpos="left" 
+                    data-transition="" data-theme="c">Weight</a></li>
+                <li><a href="#calculate" data-icon="info" data-iconpos="left" 
+                        data-transition="" data-theme="c"
+                    class="ui-btn-active ui-state-persist">Calculate Activity / Distance</a></li>
+		    </ul>
+		    </div>
+        </header>
+
+        <section data-role="content">
+
+        <div style="float: left;">
+        <form id="frmFood" name="frmFood" data-ajax="false">
+			<fieldset data-role="controlgroup" data-type="horizontal">
+            <label for="txtActivity" style="font-weight: bold; 
+                font-size: x-large;">Activity</label><br /><br />
+                <select id="ddlActivity">
+                    <optgroup label="WALKING">
+                        <option value="2.5698860228"
+                            selected="selected">Walking 2.0mph (slow)</option>
+                        <option value="3.0881823635">Walking 2.5mph (slightly slow)</option>
+                        <option value="3.3977204559">Walking 3.0mph (normal)</option>
+                        <option value="3.9088182364">Walking 3.5mph (slightly fast)</option>
+                        <option value="5.1469706059">Walking 4.0mph (fast)</option>
+                        <option value="6.4859028194">Walking 4.5mph (very fast)</option>
+                        <option value="6.6874625075">Speed Walking (very, very fast)</option>
+                        <option value="3.0881823635">Dog Walking (very, very slow)</option>
+                    </optgroup>
+                    <optgroup label="RUNNING">
+                        <option value="7.2057588482">General Jogging</option>
+                        <option value="8.2351529694">Running 5mph</option>
+                        <option value="9.8821835634">Running 6mph</option>
+                        <option value="11.8344331134">Running 7mph</option>
+                        <option value="13.1762447512">Running 8mph</option>
+                        <option value="14.8232753451">Running 9mph</option>
+                        <option value="16.470305939">Running 10mph</option>
+                        <option value="18.1173365329">Running 11mph</option>
+                    </optgroup>
+
+                </select>
+                </fieldset>
+
+                <fieldset data-role="controlgroup" data-type="horizontal">
+			        <input id="btnStartA" name="btnStartA" type="button" value="Start Activity" 
+                        onclick="" data-theme="e" />
+                    <input id="btnEndA" name="btnEndA" type="button" value="Calculate Calories Burnt"
+                         data-theme="e" />
+                    <input id="btnStopA" name="btnStopA" type="button" value="End Activity"
+                         data-theme="e" />
+                </fieldset><br />
+                Calories:&nbsp<label id="lblCalories" style="color: green; font-weight: 800">N/A</label>
+                <br /><br /><div id="countdown">SECONDS:</div>
+		    </form>
+            </div>
+            <div style="float: right;" data-role="navbar">
+                <ul>
+                    <li><a href="#distance" data-icon="grid" data-iconpos="left" 
+                        data-transition="" data-theme="c">Distance</a></li>
+                </ul>
+                <ul>
+                    <li><a href="#calculate" data-icon="info" data-iconpos="left" 
+                        data-transition="" class="ui-btn-active ui-state-persist" 
+                        data-theme="c">Activity</a></li>
+		        </ul>
+            </div>
+        </section>
+
+        <footer data-role="footer" data-theme="c">
+            <h4>&copy; 2013</h4>
+        </footer>
+
+    </div>
+
+    <div data-role="page" id="alterPerson">
+        <header data-role="header" data-theme="d">
+            <h1><b>CK Calorie Tracker</b></h1>
+            <div data-role="navbar">
+		    <ul>
+			    <li><a href="#home" data-icon="home" data-iconpos="left" 
+                    data-transition="" data-theme="c">Home</a></li>
+                <li><a href="#person" data-icon="star" data-iconpos="left"
+                    data-theme="c" class="ui-btn-active ui-state-persist">Person</a></li>
+			    <li><a href="#chooseCTBMI" data-icon="grid" data-iconpos="left" 
+                    data-transition="" data-theme="c">Calorie Tracker / BMI</a></li>
+                <li><a href="#alterWeight" data-icon="grid" data-iconpos="left" 
+                    data-transition="" data-theme="c">Weight</a></li>
+                <li><a href="#calculate" data-icon="info" data-iconpos="left" 
+                        data-transition="" 
+                        data-theme="c">Calculate Activity / Distance</a></li>
+		    </ul>
+		    </div>
+        </header>
+
+        <section data-role="content">
+            <div data-role="navbar">
+            <ul>
+                <li><a href="#updatePerson" id="liUpdate" data-icon="forward" 
+            		    data-theme="b">UPDATE</a>
+                </li>
+            </ul>
+            <ul>
+                <li><a href="#" data-icon="delete" id="btnDelete" data-theme="b" 
+            		    type="button">DELETE</a>
+                </li>
+            </ul>
+            <ul>
+                <li><a href="#weight" data-icon="grid" id="liWeight" data-theme="b" 
+            		    type="button">WEIGHT</a>
+                </li>
+            </ul>
+            <ul>
+                <li><a href="#person" data-icon="back" data-theme="a">Cancel</a></li>
+            </ul>
+            </div>
+        </section>
+        <footer data-role="footer">
+            &copy; 2013
+        </footer>
+    </div>
+
+
+    <div id="person" data-role="page">
+        <header data-role="header" data-theme="d">
+            <h1><b>CK Calorie Tracker</b></h1>
+            <div data-role="navbar">
+		        <ul>
+			        <li><a href="#home" data-icon="home" data-iconpos="left" 
+                        data-transition="" data-theme="c">Home</a></li>
+                    <li><a href="#person" data-icon="star" data-iconpos="left"
+                        data-theme="c" class="ui-btn-active ui-state-persist">Person</a></li>
+			        <li><a href="#chooseCTBMI" data-icon="grid" data-iconpos="left" 
+                        data-transition="" data-theme="c">Calorie Tracker / BMI</a></li>
+                    <li><a href="#alterWeight" data-icon="grid" data-iconpos="left" 
+                        data-transition="" data-theme="c">Weight</a></li>
+                    <li><a href="#calculate" data-icon="info" data-iconpos="left" 
+                        data-transition="" 
+                        data-theme="c">Calculate Activity / Distance</a></li>
+		        </ul>
+		    </div>
+        </header>
+        <section data-role="content">
+            <div data-role="navbar">
+                <ul>
+                    <li><a href="#insertPerson" id="liInsert" data-icon="plus"
+                        data-theme="b">INSERT</a>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <a href="#" id="btnDisplay" data-theme="b" data-icon="grid">
+                            DISPLAY
+                        </a>
+                    </li>
+                </ul>
+                <ul id="lstAll" data-role="listview" data-split-icon="info" data-inset="true"
+                    style="float: left;">
+                  <li style="text-align: center;">NO PEOPLE</li>
+               </ul>
+            </div>
+        </section>
+    </div>
+
+
+    <div id="insertPerson" data-role="page">
+        <header data-role="header" data-theme="d">
+            <h1><b>CK Calorie Tracker</b></h1>
+            <div data-role="navbar">
+		        <ul>
+			        <li><a href="#home" data-icon="home" data-iconpos="left" 
+                        data-transition="" data-theme="c">Home</a></li>
+                    <li><a href="#person" data-icon="star" data-iconpos="left"
+                        data-theme="c" class="ui-btn-active">Person</a></li>
+			        <li><a href="#chooseCTBMI" data-icon="grid" data-iconpos="left" 
+                        data-transition="" data-theme="c">Calorie Tracker / BMI</a></li>
+                    <li><a href="#alterWeight" data-icon="grid" data-iconpos="left" 
+                        data-transition="" data-theme="c">Weight</a></li>
+                    <li><a href="#calculate" data-icon="info" data-iconpos="left" 
+                        data-transition="" 
+                        data-theme="c">Calculate Activity / Distance</a></li>
+		        </ul>
+		    </div>
+        </header>
+
+        <section data-role="content">
+            <form id="frmAddPerson" name="frmAddPerson">
+                <fieldset data-role="controlgroup" data-type="horizontal" 
+                    id="genderAdd" name="genderAdd">
+			      <label for="choice1">Male</label>
+			      <input type="radio" name="type" id="choice1" value="Male" checked="checked" />
+			      <label for="choice2">Female</label>
+		          <input type="radio" name="type" id="choice2" value="Female" />
+		       </fieldset>
+                
+                <label for="txtNameAdd">Name</label>
+			    <input id="txtNameAdd" name="txtNameAdd" type="text" class="required" 
+				    title="Please enter your name.">
+                
+                <label for="txtDobAdd">Date of Birth</label>
+			    <input id="txtDobAdd" name="txtDobAdd" type="date" class="date" 
+				    title="Please enter your date of birth (YYYY/MM/DD).">
+                
+                <label for="ddlFeetAdd">Height (Feet | Inches)</label>
+			    <fieldset data-role="controlgroup" data-type="horizontal">
+                    <select id="ddlFeetAdd" name="ddlFeetAdd">
+                        <optgroup label="Feet">
+                            <option value="1" selected="selected">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                        </optgroup>
+                    </select>
+                    <select id="ddlInchesAdd">
+                        <optgroup label="Inches">
+                            <option value="0" selected="selected">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                        </optgroup>
+                    </select>
+                </fieldset>
+
+                <label for="txtWeightAdd">Weight (lbs)</label>
+			    <input id="txtWeightAdd" name="txtWeightAdd" type="text" class="required" 
+				    title="Please enter your weight in pounds.">
+
+                <input id="btnInsert" type="button" value="Add" data-theme="e" />
+            </form>
+        </section>
+
+        <footer data-role="footer">
+           &copy; 2013
+        </footer>
+    </div>
+
+
+    <div id="updatePerson" data-role="page">
+        
+        <header data-role="header" data-theme="d">
+            <h1><b>CK Calorie Tracker</b></h1>
+            <div data-role="navbar">
+		        <ul>
+			        <li><a href="#home" data-icon="home" data-iconpos="left" 
+                        data-transition="" data-theme="c">Home</a></li>
+                    <li><a href="#person" data-icon="star" data-iconpos="left"
+                        data-theme="c" class="ui-btn-active">Person</a></li>
+			        <li><a href="#chooseCTBMI" data-icon="grid" data-iconpos="left" 
+                        data-transition="" data-theme="c">Calorie Tracker / BMI</a></li>
+                    <li><a href="#alterWeight" data-icon="grid" data-iconpos="left" 
+                        data-transition="" data-theme="c">Weight</a></li>
+                    <li><a href="#calculate" data-icon="info" data-iconpos="left" 
+                        data-transition="" 
+                        data-theme="c">Calculate Activity / Distance</a></li>
+		        </ul>
+		    </div>
+        </header>
+
+        <section data-role="content">
+            <form id="frmUpdate" name="frmUpdate" data-ajax="false">
+
+                <label for="txtNameU">Name</label>
+	            <input id="txtNameU" name="txtNameU" type="text" class="required" 
+		            title="Please enter your name.">
+
+                <label for="txtDobU">Date of Birth</label>
+	            <input id="txtDobU" name="txtDobU" type="date" class="date" 
+		            title="Please enter your date of birth (YYYY/MM/DD).">
+
+                <label for="ddlFeetU">Height (Feet | Inches)</label>
+	            <fieldset data-role="controlgroup" data-type="horizontal">
+		            <select id="ddlFeetU" name="ddlFeetU">
+			            <optgroup label="Feet">
+				            <option value="1" selected="selected">1</option>
+				            <option value="2">2</option>
+				            <option value="3">3</option>
+				            <option value="4">4</option>
+				            <option value="5">5</option>
+				            <option value="6">6</option>
+				            <option value="7">7</option>
+				            <option value="8">8</option>
+			            </optgroup>
+		            </select>
+		            <select id="ddlInchesU">
+			            <optgroup label="Inches">
+				            <option value="0" selected="selected">0</option>
+				            <option value="1">1</option>
+				            <option value="2">2</option>
+				            <option value="3">3</option>
+				            <option value="4">4</option>
+				            <option value="5">5</option>
+				            <option value="6">6</option>
+				            <option value="7">7</option>
+				            <option value="8">8</option>
+				            <option value="9">9</option>
+				            <option value="10">10</option>
+				            <option value="11">11</option>
+			            </optgroup>
+		            </select>
+	            </fieldset>
+
+                <label for="txtWeightU">Weight (lbs)</label>
+	            <input id="txtWeightU" name="txtWeightU" type="text" class="required" 
+		            title="Please enter your weight in pounds.">
+
+	            <input id="btnUpdate" type="button" value="Update" data-theme="e" />
+
+            </form>
+        </section>
+
+        <footer data-role="footer">
+           &copy; 2013
+        </footer>
+
+    </div>
+
+    <div id="distance" data-role="page">
+        
+        <header data-role="header" data-theme="d">
+            <h1><b>CK Calorie Tracker</b></h1>
+            <div data-role="navbar">
+		        <ul>
+			        <li><a href="#home" data-icon="home" data-iconpos="left" 
+                        data-transition="" data-theme="c">Home</a></li>
+                    <li><a href="#person" data-icon="star" data-iconpos="left"
+                        data-theme="c">Person</a></li>
+			        <li><a href="#chooseCTBMI" data-icon="grid" data-iconpos="left" 
+                        data-transition="" data-theme="c">Calorie Tracker / BMI</a></li>
+                    <li><a href="#alterWeight" data-icon="grid" data-iconpos="left" 
+                        data-transition="" data-theme="c">Weight</a></li>
+                    <li><a href="#calculate" data-icon="info" data-iconpos="left" 
+                        data-transition="" class="ui-btn-active" 
+                        data-theme="c">Calculate Activity / Distance</a></li>
+		        </ul>
+		    </div>
+        </header>
+
+        <section data-role="content">
+
+            <div style="float: left;">
+                <fieldset data-role="controlgroup">
+                    <input id="btnCoordinates" type="button" value="Get Distance" data-theme="e"
+                        onclick="getPosition('')" />
+                    <input id="btnClear" type="button" value="Start Over" data-theme="e"
+                        onclick="clearDistance('')" />
+                    <br /><b>POINT A:</b><label id="lblPointA"></label><br /><br />
+                    <b>POINT B:</b><label id="lblPointB"></label>
+                    <p>
+                        <b>TOTAL DISTANCE: </b>
+                        <label style="font-weight: bold; color: green;" id="lblTotDist"></label>m
+                    </p>
+                </fieldset>
+            </div>
+
+            <div style="float: right;" data-role="navbar">
+                <ul>
+                    <li><a href="#distance" data-icon="grid" data-iconpos="left" 
+                        data-transition="" data-theme="c"
+                        class="ui-btn-active ui-state-persist">Distance</a></li>
+                </ul>
+                <ul>
+                    <li><a href="#calculate" data-icon="info" data-iconpos="left" 
+                        data-transition="" data-theme="c">Activity</a></li>
+		        </ul>
+            </div>
+        </section>
+
+        <footer data-role="footer" data-theme="c">
+            <h4>&copy; 2013</h4>
+        </footer>
+
+    </div>
+
+    <div data-role="page" id="addWeight">
+        <header data-role="header" data-theme="d">
+            <h1><b>CK Calorie Tracker</b></h1>
+            <div data-role="navbar">
+		    <ul>
+			    <li><a href="#home" data-icon="home" data-iconpos="left" 
+                    data-transition="" data-theme="c">Home</a></li>
+                <li><a href="#person" data-icon="star" data-iconpos="left"
+                    data-theme="c">Person</a></li>
+			    <li><a href="#chooseCTBMI" data-icon="grid" data-iconpos="left" 
+                    data-transition="" data-theme="c">Calorie Tracker / BMI</a></li>
+                <li><a href="#alterWeight" data-icon="grid" data-iconpos="left" 
+                    data-transition="" data-theme="c"
+                    class="ui-btn-active ui-state-persist">Weight</a></li>
+                <li><a href="#calculate" data-icon="info" data-iconpos="left" 
+                        data-transition="" 
+                        data-theme="c">Calculate Activity / Distance</a></li>
+		    </ul>
+		    </div>
+        </header>
+
+        <section data-role="content">
+            <div>
+                <form id="frmAddWeight" name="frmAddWeight" data-ajax="false">
+                    <label for="txtWeightAC">Weight (lbs)</label>
+	                <input id="txtWeightAC" name="txtWeightAC" type="text" class="required" 
+		                title="Please Enter weight in pounds.">
+
+                    <fieldset data-role="controlgroup" data-type="horizontal">
+                        <legend title="Date of Weight">Date of Weight</legend>
+                        <select id="ddlDateMonthAC">
+                            <option value="01">January</option><option value="02">February</option>
+                            <option value="03">March</option><option value="04">April</option>
+                            <option value="05">May</option><option value="06">June</option>
+                            <option value="07">July</option><option value="08">August</option>
+                            <option value="09">September</option><option value="10">October</option>
+                            <option value="11">November</option><option value="12">December</option>
+                        </select>
+                        <select id="ddlDateYearAC">
+                            <option>2013</option><option>2012</option><option>2011</option>
+                            <option>2010</option><option>2009</option><option>2008</option>
+                            <option>2007</option><option>2006</option><option>2005</option>
+                            <option>2004</option><option>2003</option><option>2002</option>
+                            <option>2001</option><option>2000</option>
+                        </select>
+                    </fieldset>
+
+                    <input id="btnWeightAC" name="btnWeightAC" type="button" value="Add Weight" data-theme="e" />
+                </form>
+            </div>
+        </section>
+        <footer data-role="footer">
+            &copy; 2013
+        </footer>
+    </div>
+
+    <div data-role="page" id="alterWeight">
+        <header data-role="header" data-theme="d">
+            <h1><b>CK Calorie Tracker</b></h1>
+            <div data-role="navbar">
+		    <ul>
+			    <li><a href="#home" data-icon="home" data-iconpos="left" 
+                    data-transition="" data-theme="c">Home</a></li>
+                <li><a href="#person" data-icon="star" data-iconpos="left"
+                    data-theme="c">Person</a></li>
+			    <li><a href="#chooseCTBMI" data-icon="grid" data-iconpos="left" 
+                    data-transition="" data-theme="c">Calorie Tracker / BMI</a></li>
+                <li><a href="#alterWeight" data-icon="grid" data-iconpos="left" 
+                    data-transition="" data-theme="c"
+                    class="ui-btn-active ui-state-persist">Weight</a></li>
+                <li><a href="#calculate" data-icon="info" data-iconpos="left" 
+                        data-transition="" data-theme="c">Calculate Activity / Distance</a>
+                </li>
+		    </ul>
+		    </div>
+        </header>
+
+        <section data-role="content">
+            <div data-role="navbar">
+            <ul>
+                <li><a href="#addWeight" id="liInsertWeight" data-icon="forward" 
+            		    data-theme="b">INSERT WEIGHT</a>
+                </li>
+            </ul>
+            <ul>
+                <li><a href="#chart" data-icon="grid" id="liShowWeight" data-theme="b" 
+            		    type="button">DISPLAY WEIGHT</a>
+                </li>
+            </ul>
+            </div>
+        </section>
+        <footer data-role="footer">
+            &copy; 2013
+        </footer>
+    </div>
+
+
+    <div data-role="page" id="chart">
+        <header data-role="header" data-theme="d">
+            <h1><b>CK Calorie Tracker</b></h1>
+            <div data-role="navbar">
+		    <ul>
+			    <li><a href="#home" data-icon="home" data-iconpos="left" 
+                    data-transition="" data-theme="c">Home</a></li>
+                <li><a href="#person" data-icon="star" data-iconpos="left"
+                    data-theme="c">Person</a></li>
+			    <li><a href="#chooseCTBMI" data-icon="grid" data-iconpos="left" 
+                    data-transition="" data-theme="c">Calorie Tracker / BMI</a></li>
+                <li><a href="#alterWeight" data-icon="grid" data-iconpos="left" 
+                    data-transition="" data-theme="c"
+                    class="ui-btn-active ui-state-persist">Weight</a></li>
+                <li><a href="#calculate" data-icon="info" data-iconpos="left" 
+                        data-transition="" data-theme="c">Calculate Activity / Distance</a>
+                </li>
+		    </ul>
+		    </div>
+        </header>
+
+        <section data-role="content">
+            <li>
+               <a href="#" id="lstChart" data-icon="forward" data-theme="b">DISPLAY WEIGHT CHART</a>
+            </li>
+
+            <!--<ul id="ulChart" data-role="listview" data-split-icon="info" data-inset="true"
+                    style="float: left;">
+                  <li style="text-align: center;">NO PEOPLE</li>
+            </ul>-->
+
+            <label id="ulChart" style="font-size: xx-small; width: 100%;"></label>
+        </section>
+        <footer data-role="footer">
+            &copy; 2013
+        </footer>
+    </div>
+
+
+    <div data-role="page" id="chooseCTBMI">
+        <header data-role="header" data-theme="d">
+            <h1><b>CK Calorie Tracker</b></h1>
+            <div data-role="navbar">
+		    <ul>
+			    <li><a href="#home" data-icon="home" data-iconpos="left" 
+                    data-transition="" data-theme="c">Home</a></li>
+                <li><a href="#person" data-icon="star" data-iconpos="left"
+                    data-theme="c">Person</a></li>
+			    <li><a href="#chooseCTBMI" data-icon="grid" data-iconpos="left" 
+                    data-transition="" data-theme="c"
+                    class="ui-btn-active ui-state-persist">Calorie Tracker / BMI</a></li>
+                <li><a href="#alterWeight" data-icon="grid" data-iconpos="left" 
+                    data-transition="" data-theme="c">Weight</a></li>
+                <li><a href="#calculate" data-icon="info" data-iconpos="left" 
+                        data-transition="" 
+                        data-theme="c">Calculate Activity / Distance</a></li>
+		    </ul>
+		    </div>
+        </header>
+
+        <section data-role="content">
+            <div data-role="navbar">
+            <ul>
+                <li><a href="#calorieTracker" id="liCT" data-icon="grid" 
+            		    data-theme="b">Calorie Tracker</a>
+                </li>
+            </ul>
+            <ul>
+                <li><a href="#bmiTracker" data-icon="grid" id="liBMI" data-theme="b" 
+            		    type="button">BMI Tracker</a>
+                </li>
+            </ul>
+            </div>
+        </section>
+        <footer data-role="footer">
+            &copy; 2013
+        </footer>
+    </div>
+</body>
+</html>
